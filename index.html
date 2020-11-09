@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <title>Drawing app by NITIN raykhere</title>
+    <style>
+        #canvas{
+            cursor:crosshair;
+        }
+    </style>
+</head>
+<body>
+    <div>
+       
+
+        <canvas id="canvas" height="400px" width="500px" style="border:1px solid grey;"></canvas>
+            <input type="color" id="color">
+            <button id="eraser">Eraser</button>
+
+            <button id="download-btn">download</button>
+    
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script>
+
+window.addEventListener('load', () => {
+
+const canvas = document.querySelector('#canvas')
+
+const color_btn = document.getElementById('color')
+const eraser_btn = document.getElementById('eraser')
+
+const download_btn = document.getElementById('download-btn')
+
+
+const ctx = canvas.getContext('2d')
+var color = '#000'
+
+// canvas.height = window.innerHeight;
+// canvas.width = window.innerWidth;
+
+
+//variables
+let painting = false
+
+function startPosition() {
+    painting = true
+}
+
+function finishPosition() {
+    painting = false;
+    ctx.beginPath()
+}
+function draw(e) {
+    if (!painting) return;
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round"
+    ctx.strokeStyle = color
+    ctx.lineTo(e.clientX, e.clientY)
+    ctx.stroke()
+
+}
+
+canvas.addEventListener('mousedown', startPosition)
+canvas.addEventListener('mouseup', finishPosition)
+canvas.addEventListener('mousemove', draw)
+
+
+///change color of drawning line
+color_btn.addEventListener('change', () => {
+console.log(color_btn.value);
+
+color = color_btn.value
+})
+
+
+//for make ereSER
+eraser_btn.addEventListener('click', () => {
+
+color = '#fff'
+})
+
+//download image
+download_btn.addEventListener('click', () => {
+const dataURI = canvas.toDataURL('image/png')
+console.log(dataURI);
+
+// const a= document.createElement('a')
+// document.body.appendChild(a)
+// // a.href=dataURI
+//a.download='canvas_image.png'
+//a.click()
+
+var pdf = new jsPDF();
+
+pdf.addImage(dataURI, 'JPEG', 40, 40);
+
+pdf.save('canvas_image.pdf')
+})
+
+})
+
+
+
+</script>
+</html>
